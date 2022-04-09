@@ -4,11 +4,15 @@ const mongoose = require("mongoose");
 //mongoose 데이터 모델링 -> Schema 객체 사용 -> Document 사용
 const postSchema = new mongoose.Schema({
   post_id : {
-    type: String,
+    type: Number,
     require: true,
     unique: true,
   },
-  user_id : {
+  // user_id : {
+  //   type: String,
+  //   require: true,
+  // },
+  user_name : {
     type: String,
     require: true,
   },

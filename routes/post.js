@@ -12,8 +12,9 @@ router.get("/", (req, res) =>{
 router.get("/main", async (req, res) => {
     console.log("/api/main 연결")
     try {
-        const post = await Post.find().sort({ "createdAt": -1 });
-        res.json({ post : post }); // ajax -> post로 받으면됌.
+        const post = await Post.find().sort({ "post_id": -1 });
+        // console.log('findpost-->',post)
+        res.json({ result : post });
     } catch (err) {
     console.error(err);
     next(err);
@@ -26,8 +27,8 @@ router.post("/posts", async (req, res,) => {
     
     // ajax --> request 
     // imageUrl 여부 확인 필요.
-    const {user_id, title, content, createdAt} = req.body;
-    console.log('0--->',{user_id, title, content, createdAt})
+    const {user_name, title, content, createdAt} = req.body;
+    console.log('0--->',{user_name, title, content, createdAt})
   
     // list 내림차순 정렬
     const postList = await Post.find().sort({ "createdAt": -1 });
@@ -42,10 +43,10 @@ router.post("/posts", async (req, res,) => {
     }
     console.log('1--->',post_id)
 
-    const sendPost = await Post.create({ userNum, boardNum ,nickname, comment, password, title, data});
+    const sendPost = await Post.create({ post_id, user_name, title ,content, createdAt });
 
     // key : value (Json 형태) --> client로 보냄
-    res.json({sendPost : sendPost}); 
+    res.json({result : sendPost}); 
     console.log(sendPost);
   });
   
@@ -56,7 +57,7 @@ router.post("/posts/:post_id", async (req, res) => {
    const [post] = await Post.find({post_id:post_id});
   //  console.log('post_id-->',post_id)
    res.json({
-    post:post
+    result:post
    })
 });
 
@@ -64,41 +65,32 @@ router.post("/posts/:post_id", async (req, res) => {
 // post 수정 API
 router.post("/modify/:post_id", async (req, res,) => {
   console.log("router/api/modify 연결");
-  let today = new Date();
-  let data = today.toLocaleString();
-  
-  
   // html ajax --> 내용을 request 함. 
-  const {boardNum , title, nickname, comment, password} = req.body;
-  console.log({boardNum,title, nickname, comment, password});
+  const {post_id , title, user_name, content, createdAt} = req.body;
+  console.log('1-->',{post_id , title, user_name, content, createdAt});
   // userId = 고유함 --> 유저 id 이거일때 뒤에꺼 바꿈
   //updateOne ({A} , {B})
   // A - > 변경될 데이터의 조건
   // B - > 변경될 데이터
-  const sendwrite = await Write.updateOne({boardNum:boardNum},{nickname:nickname, comment:comment, password:password, title:title,data:data});
-  res.json({sendwrite : sendwrite});  // key : value (Json 형태)
-  // console.log(sendwrite);
+  const modifyPost = await Post.updateOne({post_id:post_id},{title:title, user_name:user_name, content:content, title:title, createdAt:createdAt});
+  res.json({result : modifyPost});  // key : value (Json 형태)
+  // console.log(modifyPost);
 });
 
  //get --> query, post --> body 
  // delete apis
-router.delete("/delete/:boardNum", async (req, res,) => {
+router.delete("/delete/:post_id", async (req, res,) => {
   console.log("router/api/delete 연결");
   // html ajax --> 내용을 request 함. 
   // console.log('req-->',req);
-  const {boardNum} = req.body;
-  console.log(boardNum);
-  const sendwrite = await Write.deleteOne({boardNum:boardNum});
-  // console.log(sendwrite);
+  const {post_id} = req.body;
+  console.log('delete-->',post_id);
+  const deletePost = await Post.deleteOne({post_id:post_id});
+  // console.log(deletePost);
 
-  res.json({sendwrite : sendwrite}); 
-  // console.log(sendwrite);
+  res.json({result : deletePost}); 
+  // console.log(deletePost);
 });
-
-
-
-
-
 
 
 module.exports = router; //router를 모듈로 내보낸다.

@@ -11,7 +11,7 @@ connect();
 // MongoDB 연결
 const mongoose = require("mongoose");
 var db = mongoose
-.connect("mongodb+srv://sparta:sparta@cluster0.2lhai.mongodb.net/Board?retryWrites=true&w=majority",{
+.connect("mongodb+srv://sparta:sparta@cluster0.ktntr.mongodb.net/cluster0?retryWrites=true&w=majority",{
         useNewUrlParser: true,
         useUnifiedTopology: true,
         // useCreateIndex: true, //MondDB 6.0 이상에서는 지원 X
@@ -39,12 +39,12 @@ app.use("/api", [postRouter]);
 // app.use("/api", express.urlencoded({ extended: false }), router);
 //api 라우터로 들어왔을때만 goodsRouter를 실행한다. [goodsRouter,..] 처럼 2개도 가능.
 
-// // main_List page
-// app.get("/", async (req, res) => {
-//     console.log("main_page")    
-//     bodyParser.json()
-//     res.sendFile(__dirname + "/static/list.html");
-// });
+// main_List page
+app.get("/", async (req, res) => {
+    console.log("main_page")    
+    bodyParser.json()
+    res.sendFile(__dirname + "/test.html");
+});
 
 // //view 경로 설정
 // app.set('views', __dirname + '/views');
