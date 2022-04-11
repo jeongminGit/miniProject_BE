@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- javascript -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+            crossorigin="anonymous"></script>
+    <title>Document</title>
+    <script>
+        // Comment 저장 test
+        function saveComment() {
+            $.ajax({
+                type: 'POST',
+                url: '/api/comments',
+                data: {
+                    post_id : 100,
+                    comment_id : 100,
+                    user_name : "iamuser",
+                    comment : "나도 반가워요",
+                    createdAt : 100,
+                },
+                success: function (response) {   
+                    alert('저장완료')
+                    location.href = '/' 
+                    console.log(response)
+                }
+            })
+        }
+        
+        // // Post 수정 test
+        // function modifyPost(){
+        //     var post_id = 8
+        //     $.ajax({
+        //         type: 'POST',
+        //         url: `/api/modify/${post_id}`,
+        //         data: {
+        //             post_id : post_id,
+        //             title : "modify teest008",
+        //             user_name : "modify teest008",
+        //             content : "modify teest008",
+        //             createdAt : "modify teest008"
+        //             },
+        //         success: function (response) {
+        //             alert('수정완료')
+        //             console.log(response)  
+        //             location.href = '/'   
+        //         }
+        //     })
+        // }
+
+        // Comment 삭제 test
+        function deleteComment(){
+            var comment_id = 100
+            $.ajax({
+                type: 'delete',
+                url: `/api/delete/${comment_id}`,
+                data: {
+                    comment_id : comment_id,                    
+                    },
+                success: function (response) {
+                    alert('삭제완료')
+                    console.log(response)
+                    location.href = '/'
+                }
+            })
+        }
+
+        // Main Page -> Post List test
+        $(document).ready(function () {
+            commentslist();
+        });
+        function commentslist() { 
+            $.ajax({
+                type: 'GET',
+                url: '/api/main',
+                dataType:'json',
+                data: {},
+                success: function (response) {
+                    var commentsList = response.result;
+                    console.log('commentsList-->',commentsList);
+                    var str = "";
+                    for(var i=0;i<commentsList.length;i++){
+                        str+='<div>{';
+                        str+='<div>post_id : '+commentsList[i].post_id+'</div>';
+                        str+='<div>comment_id : '+commentsList[i].comment_id+'</div>';
+                        str+='<div>user_name : '+commentsList[i].user_name+'</div>';
+                        str+='<div>createdAt : '+commentsList[i].createdAt+'</div>';
+                        str+='<div>comment : '+commentsList[i].comment+'</div>';
+                        str+='</div>}';
+                    }
+                    $('#comments_List').append(str);
+                }
+            })
+        }
+
+
+
+
+
+    </script>
+</head>
+<body>
+    <button id="saveComments" onclick="saveComment()">saveComments</button>
+    <button id="modifyPost" onclick="modifyPost()">modifyPost</button>
+    <button id="deleteComments" onclick="deleteComment()">deleteComments</button>
+    <div id="comments_List">COMMENTS LIST</div>
+    
+    
+</body>
+</html>

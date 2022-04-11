@@ -1,6 +1,5 @@
-// require('dotenv').config();
 const express = require('express');
-const connect = require('./models/comment');
+const connect = require('./schemas/comment');
 const app = express();
 const commentsRouter = require('./routes/comment');
 const bodyParser = require('body-parser');
