@@ -32,7 +32,7 @@ const registerSchema = Joi.object({
 })
 
 //회원가입
-router.post("/join", async (req, res) => {
+router.post("/signup", async (req, res) => {
 
     try {
         const { user_id, user_name, password, passwordConfirm } = await registerSchema.validateAsync(req.body)
@@ -132,7 +132,7 @@ router.post('/idCheck', async (req, res) => {
     });
     if (existUsers.length) {
         res.send({
-            alert: "사용 불가능합니다."
+            alert: "이메일 또는 아이디를 다시 입력해주세요."
         });
         return;
     }
