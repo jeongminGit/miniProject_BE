@@ -47,8 +47,6 @@ app.use('/api', [commentsRouter])
 // );
 
 app.get('/', async (req, res) => {
-    //await user.create({ userId: 'test', password: 'test', nickname: 'test' });
-    // res.send('Hello World');
     console.log("main_page")   
     bodyParser.json()
     res.sendFile(__dirname + "/test.html");
