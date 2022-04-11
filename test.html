@@ -96,17 +96,54 @@
             })
         }
 
+        // image file upload
+        // function imageSave(){
+        //     // var post_id = 10;
+        //     const imageInput = $('#imageInput')[0]; // upload file 선택
+        //     // console.log('file-->',imageInput.files);
+        //     const formData = new FormData();
+        //     // 0번째 파일을 FormData 객체 안에 append
+        //     formData.append("image", imageInput.files[0]);
+        //     for (var key of formData.keys()) {
+        //         console.log('key-->',key);
+        //     }
+        //     for (var value of formData.values()) {
+        //         console.log('value-->',value);
+        //     }
 
-
-
+        //     $.ajax({
+        //         type: 'post',
+        //         url: '/api/imageUrl',
+        //         //contentType : false 로 선언 시 content-type 헤더가 multipart/form-data로 전송
+        //         contentType : false,
+        //         //processData : false로 선언 시 formData를 string으로 변환하지 않음
+        //         processData : false,
+        //         data: formData,
+        //         success: function (response) {
+        //         }
+        //     })
+        // }
 
     </script>
 </head>
 <body>
-    <button id="savePost" onclick="savePost()">savePost</button>
+    <!-- <button id="savePost" onclick="savePost()">savePost</button>
     <button id="modifyPost" onclick="modifyPost()">modifyPost</button>
     <button id="deletePost" onclick="deletePost()">deletePost</button>
-    <div id="post_List">POST LIST</div>
+
+    <-- file upload -->
+    <!-- <form id="fileUploadForm" enctype="multipart/form-data">
+        <input type="file" id="imageInput" accept="image/*" name="uploadFile"/>
+        <input type="button" onclick="imageSave()" value="파일업로드">
+        <div>이미지 미리보기</div>
+        <div id="imagePreview">
+            <img id="img">
+        </div>
+    </form>
+
+    <div id="post_List">POST LIST</div> -->
+
+    
     
     
 </body>

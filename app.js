@@ -1,9 +1,9 @@
 const express = require("express");
 const connect = require("./schemas/post");
 const postRouter = require("./routes/post"); 
+const multerRouter = require("./routes/multer"); 
 const bodyParser = require('body-parser');
 const app = express();
-const router = express.Router();
 const port = 3000;
 connect();
 
@@ -27,7 +27,7 @@ const requestMiddleware = (req, res, next) => {
     next();
 };
 // body-parser 라이브러리
-app.use(express.urlencoded({extend: true}));
+// app.use(express.urlencoded({extend: true}));
  // static 폴터 가져오기
 // app.use(express.static("static"))
 app.use(bodyParser.json());
@@ -35,9 +35,9 @@ app.use(express.json());
 
 // Middleware
 app.use(requestMiddleware);
-app.use("/api", [postRouter]);
-// app.use("/api", express.urlencoded({ extended: false }), router);
 //api 라우터로 들어왔을때만 goodsRouter를 실행한다. [goodsRouter,..] 처럼 2개도 가능.
+app.use("/api", [postRouter, multerRouter]);
+
 
 // main_List page
 app.get("/", async (req, res) => {
@@ -45,21 +45,6 @@ app.get("/", async (req, res) => {
     bodyParser.json()
     res.sendFile(__dirname + "/test.html");
 });
-
-// //view 경로 설정
-// app.set('views', __dirname + '/views');
-
-// //화면 engine을 html로 설정
-// app.engine('html', require('ejs').renderFile);
-// app.set('view engine', 'html');
-
-// // write page
-// app.get("/write", async (req, res) => {
-//     console.log("write_page")
-
-//     bodyParser.json()
-//     res.sendFile(__dirname + "/static/write.html");
-// });
 
 
 app.listen(port, () => {
