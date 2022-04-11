@@ -1,7 +1,6 @@
 // require('dotenv').config();
 const express = require('express');
 const connect = require('./models/comment');
-// const cors = require('cors');
 const app = express();
 const commentsRouter = require('./routes/comment');
 const bodyParser = require('body-parser');

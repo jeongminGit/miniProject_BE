@@ -32,7 +32,7 @@ router.post('/comments', async (req, res) => {
     console.log(sendComments);
 
 });
-
+//
 // 댓글 삭제
 router.delete("/delete/:comment_id", async (req, res,) => {
     // html ajax --> 내용을 request 함. 
