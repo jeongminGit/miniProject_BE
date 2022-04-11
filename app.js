@@ -107,7 +107,7 @@ app.get('/', async (req, res) => {
     bodyParser.json()
     res.sendFile(__dirname + "/test.html");
 });
-
+//
 
 app.use(cors(corsOptions));
 
