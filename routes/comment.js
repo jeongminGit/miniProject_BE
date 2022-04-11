@@ -1,6 +1,6 @@
 const express = require('express');
 const { json } = require("express/lib/response");
-const Comments = require('../models/comment');
+const Comments = require('../schemas/comment');
 const router = express.Router();
 
 
