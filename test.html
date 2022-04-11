@@ -31,6 +31,27 @@
             })
         }
         
+        // // Post 수정 test
+        // function modifyPost(){
+        //     var post_id = 8
+        //     $.ajax({
+        //         type: 'POST',
+        //         url: `/api/modify/${post_id}`,
+        //         data: {
+        //             post_id : post_id,
+        //             title : "modify teest008",
+        //             user_name : "modify teest008",
+        //             content : "modify teest008",
+        //             createdAt : "modify teest008"
+        //             },
+        //         success: function (response) {
+        //             alert('수정완료')
+        //             console.log(response)  
+        //             location.href = '/'   
+        //         }
+        //     })
+        // }
+
         // Comment 삭제 test
         function deleteComment(){
             var comment_id = 100
@@ -49,6 +70,7 @@
         }
 
         // Main Page -> Comments List test
+        // Main Page -> Post List test
         $(document).ready(function () {
             commentslist();
         });
@@ -75,6 +97,11 @@
                 }
             })
         }
+
+
+
+
+
     </script>
 </head>
 <body>
