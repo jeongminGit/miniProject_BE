@@ -101,9 +101,9 @@ router.post("/signup", async (req, res) => {
 
 //로그인, 토큰생성
 router.post("/login", async (req, res) => {
-    const { userId, password } = req.body
+    const { user_id, password } = req.body
 
-    const user = await User.findOne({ userId })
+    const user = await User.findOne({ user_id })
 
     if (!user) {
         res.status(401).send({
@@ -114,7 +114,7 @@ router.post("/login", async (req, res) => {
         const correctPassword = await bcrypt.compareSync(password, user.password)//hash 값과 req값을 비교해서 일치하면 true 출력 
         console.log(correctPassword)
         if (correctPassword) {
-            const token = jwt.sign({ userId: user.userId }, `${process.env.KEY}`);
+            const token = jwt.sign({ user_id: user.user_id }, `${process.env.KEY}`);
     res.status(200).send({ token })
         } else {
             res.status(400).send({errorMessage: '비밀번호를 확인해주세요.' })
