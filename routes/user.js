@@ -104,7 +104,7 @@ router.post("/login", async (req, res) => {
     const { user_id, password } = req.body
 
     const user = await User.findOne({ user_id })
-
+    
     if (!user) {
         res.status(401).send({
             errorMessage: "존재하지 않는 이메일입니다."
