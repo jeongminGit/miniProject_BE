@@ -2,11 +2,14 @@ const express = require("express");
 const { json } = require("express/lib/response");
 const Post = require("../schemas/post")
 const router = express.Router();
+const cors = require("cors");
+
+router.use(cors());
+
 
 router.get("/", (req, res) =>{
     res.send("this is root page");
 });
-
 
 // /api/list --> Json 형식으로 전송받음 -->list.html에서 ajax로 가져감.
 router.get("/main", async (req, res) => {
@@ -18,7 +21,7 @@ router.get("/main", async (req, res) => {
     } catch (err) {
     console.error(err);
     next(err);
-    }
+    };
 });
 
 // /api/posts --> 글 작성
@@ -31,7 +34,7 @@ router.post("/posts", async (req, res,) => {
     // console.log('0--->',{user_name, title, content, createdAt})
   
     // list 내림차순 정렬
-    const postList = await Post.find().sort({ "createdAt": -1 });
+    const postList = await Post.find().sort({ "post_id": -1 });
     // console.log(postList)
 
     // post_id 부여
@@ -42,7 +45,6 @@ router.post("/posts", async (req, res,) => {
         post_id = postList[0].post_id+1
     }
     // console.log('1--->',post_id)
-
     const sendPost = await Post.create({ post_id, user_name, title ,content, createdAt });
 
     // key : value (Json 형태) --> client로 보냄
@@ -53,7 +55,8 @@ router.post("/posts", async (req, res,) => {
 // 게시판 상세조회 API
 router.post("/posts/:post_id", async (req, res) => {
   //  console.log('req-->',req)
-   const {post_id} = req.body;
+   const {post_id} = req.params;
+   console.log(post_id);
    const [post] = await Post.find({post_id:post_id});
   //  console.log('post_id-->',post_id)
    res.json({
