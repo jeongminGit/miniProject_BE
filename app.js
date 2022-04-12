@@ -17,8 +17,19 @@ schemasPost();
 
 const userRouter = require('./routes/user');
 
-//디비 설정
-mongoose.connect('mongodb://localhost/mydb', {});
+//MongoDB 설정
+//mongoose.connect('mongodb://localhost/mydb', {});
+var db = mongoose
+.connect("mongodb+srv://sparta:sparta@cluster0.ktntr.mongodb.net/NodeSpringPJT?retryWrites=true&w=majority",{
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        // useCreateIndex: true, //MondDB 6.0 이상에서는 지원 X
+        ignoreUndefined: true
+    })
+    .then(() => console.log('MongoDB 연결완료'))
+    .catch(err =>{console.log(err);
+});
+
 
 
 const app = express();
