@@ -102,25 +102,26 @@ router.post("/signup", async (req, res) => {
 //로그인, 토큰생성
 router.post("/login", async (req, res) => {
     const { user_id, password } = req.body
-
     const user = await User.findOne({ user_id })
-    
+    console.log(user)
+    var _id = user._id
+    var user_name = user.user_name
+    console.log(user_id, user_name, password, _id)
     if (!user) {
         res.status(401).send({
             errorMessage: "존재하지 않는 이메일입니다."
         })
         return
     } else {
-        const correctPassword = await bcrypt.compareSync(password, user.password)//hash 값과 req값을 비교해서 일치하면 true 출력 
+        const correctPassword = await bcrypt.compareSync(password, user.password)//hash 값과 req값을 비교해서 일치하면 true 출력
         console.log(correctPassword)
         if (correctPassword) {
             const token = jwt.sign({ user_id: user.user_id }, `${process.env.KEY}`);
-    res.status(200).send({ token })
+    res.status(200).send({ token, user_id, user_name, _id })
         } else {
             res.status(400).send({errorMessage: '비밀번호를 확인해주세요.' })
         }
     }
-  
 })
 
 // 아이디, 닉네임 중복확인
@@ -141,6 +142,14 @@ router.post('/idCheck', async (req, res) => {
         alert: '사용 가능합니다.'
     });
 });
+
+router.get("/checkLogin", authMiddleware, async (req, res) => {
+    const { user } = res.locals;
+    res.send({
+      user_name: user[0].user_name,
+      _id : user[0]._id,
+    });
+  });
 
 
 
