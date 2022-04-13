@@ -4,7 +4,7 @@ const User = require("../schemas/user")
 const Joi = require("joi")
 const cors = require('cors')
 const bcrypt = require('bcrypt')
-
+const authMiddleware = require("../middlewares/auth");
 const corsOptions = {
     origin: '*',
     // credentials: true
