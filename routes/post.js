@@ -62,7 +62,7 @@ router.post("/posts", authMiddleware, upload.single("imgae"), async (req, res,) 
     console.log(sendPost);
   });
 
-// // 이미지 업로드
+// // 이미지 업로드 테스트
 // router.post("/posts/imageUpload", upload.single("image"), async (req, res) => {
 // 	try {
 // 		const image = req.file.location;
