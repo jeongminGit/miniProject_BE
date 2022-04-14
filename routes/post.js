@@ -1,13 +1,14 @@
 const express = require("express");
-const { json } = require("express/lib/response");
+// const { json } = require("express/lib/response");
 const Post = require("../schemas/post")
-const User = require("../schemas/user")
+// const User = require("../schemas/user")
 const router = express.Router();
 const cors = require("cors");
 const authMiddleware = require("../middlewares/auth")
-const Upload = require("../middlewares/upload")
+// const Upload = require("../middlewares/upload")
 const { upload } = require("../middlewares/upload")
-const path = require("path")
+const deleteS3 = require("../middlewares/deleteS3")
+// const path = require("path")
 
 router.use(cors());
 
@@ -31,17 +32,18 @@ router.get("/main", authMiddleware, async (req, res) => {
 });
 
 // /api/posts --> 글 작성
-router.post("/posts", authMiddleware, upload.single("imgae"), async (req, res,) => {
+router.post("/posts", authMiddleware, upload.single("image"), async (req, res,) => {
     console.log("/api/posts 연결");
     
     // ajax --> request 
     // imageUrl 여부 확인 필요.
-    const { user_id } = res.locals.user
+    const { user } = res.locals;
+    const user_id = user[0].user_id
+    const user_name = user[0].user_name
     const { title, content } = req.body;
     const image = req.file.location;
     const createdAt = Date.now();
-    const userName = await User.findOne({ user_id })
-    const user_name = userName.user_name
+    // const userName = await User.findOne({ user_id })
     console.log(user_id, user_name)
     // console.log('0--->',{user_name, title, content, createdAt})
   
@@ -85,31 +87,63 @@ router.post("/posts/:post_id", authMiddleware, async (req, res) => {
 });
 
 // post 수정 API
-router.post("/modify/:post_id", authMiddleware, async (req, res,) => {
+router.post("/modify/:post_id", authMiddleware, upload.single("image"), async (req, res,) => {
   console.log("router/api/modify 연결");
   // html ajax --> 내용을 request 함. 
-  const {user_id} = req.locals.user;
-  const {post_id , title, content, createdAt} = req.body;
-//   console.log('1-->',{post_id , title, user_name, content, createdAt});
-  // userId = 고유함 --> 유저 id 이거일때 뒤에꺼 바꿈
-  //updateOne ({A} , {B})
-  // A - > 변경될 데이터의 조건
-  // B - > 변경될 데이터
-  const modifyPost = await Post.updateOne({post_id:post_id},{title:title, user_id:user_id, content:content, title:title, createdAt:createdAt});
-  res.json({result : modifyPost});  // key : value (Json 형태)
-  // console.log(modifyPost);
+  const { user } = res.locals;
+  // console.log(user)
+  const user_id = user[0].user_id;
+  const user_name = user[0].user_name;
+  // console.log(user_id, user_name)
+  const post_id = req.params.post_id;
+  // console.log(post_id)
+  const image = req.file.location;
+  const { title, content } = req.body;
+  const createdAt = Date.now();
+  const checkPost = await Post.find({post_id:post_id})
+  // console.log("checkPoint: ", checkPost)
+  // console.log(checkPost[0].user_id)
+  if (checkPost) {
+    if (user_id !== checkPost[0].user_id) {
+      return res.status(400).send({
+        result: "fail",
+        errorMessage: "자기글만 수정할 수 있습니다.",
+      });
+    } else {
+      if (checkPost[0].image !== image) {
+        await deleteS3(checkPost);
+      }
+      await Post.updateOne({ post_id: post_id }, { title: title, user_id: user_id, user_name: user_name, content: content, title: title, createdAt: createdAt, image: image });
+      console.log('게시글 수정 완료!')
+    }
+  }
+	res.json({ result: "success", msg: "수정되었습니다." });
 });
 
 router.delete("/delete/:post_id", authMiddleware, async (req, res,) => {
   console.log("router/api/delete 연결");
-  // html ajax --> 내용을 request 함. 
-  // console.log('req-->',req);
-  const {post_id} = req.body;
-  const deletePost = await Post.deleteOne({post_id:post_id});
-  // console.log(deletePost);
+  const post_id = req.params.post_id;
+  const { user } = res.locals;
+  // console.log(user, post_id)
+  const user_id = user[0].user_id;
+  console.log(user_id, post_id)
+  const checkPost = await Post.find({post_id:post_id})
+  // console.log("checkPoint: ", checkPost)
+  // console.log(checkPost[0].user_id)
+  if (checkPost) {
+    if (user_id !== checkPost[0].user_id) {
+      return res.status(400).send({
+        result: "fail",
+        errorMessage: "자기글만 삭제할 수 있습니다.",
+      });
+    } else {
+        await deleteS3(checkPost);
+        await Post.deleteOne({post_id:post_id})
+      }
+    }
+	res.json({ result: "success", msg: "삭제되었습니다." })
+})
 
-  res.json({result : deletePost}); 
-});
 
 
 module.exports = router; //router를 모듈로 내보낸다.
