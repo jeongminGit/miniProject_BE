@@ -28,7 +28,7 @@ const fileFilter = (req, file, cb) => {
 
 const storage = multerS3({
     s3: S3,
-    bucket: "miniproject-spring-bucket",
+    bucket: process.env.BUCKET_NAME,
     key(req, file, cb) {
         cb(
             null,
