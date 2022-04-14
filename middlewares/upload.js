@@ -2,7 +2,6 @@ const path = require("path");
 const AWS = require("aws-sdk");
 const multerS3 = require("multer-s3");
 const multer = require("multer");
-const s3 = require('../config/s3');
 require('dotenv').config();
 
 // .env
