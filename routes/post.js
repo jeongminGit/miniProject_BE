@@ -18,7 +18,7 @@ router.get("/", (req, res) =>{
 });
 
 // /api/list --> Json 형식으로 전송받음 -->list.html에서 ajax로 가져감.
-router.get("/main", authMiddleware, async (req, res) => {
+router.get("/main", async (req, res) => {
     console.log("/api/main 연결")
     try {
         const post = await Post.find().sort({ "post_id": -1 });
