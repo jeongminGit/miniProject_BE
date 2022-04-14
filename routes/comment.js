@@ -5,9 +5,10 @@ const User = require('../schemas/user')
 const Post = require('../schemas/post');
 const comment = require('../schemas/comment');
 const router = express.Router();
+const authMiddleware = require("../middlewares/auth-middleware")
 
 // 댓글 조회
-router.get('/posts/:post_id/comments', async (req, res) => {
+router.get('/posts/:post_id/comments', authMiddleware, async (req, res) => {
     const post_id = req.params.post_id
     const comments = await Comments.find({ post_id: post_id })
     console.log(post_id, comments)
@@ -18,10 +19,11 @@ router.get('/posts/:post_id/comments', async (req, res) => {
 });
 
 // 댓글 작성
-router.post('/posts/:post_id/comments/', async (req, res) => {
+router.post('/posts/:post_id/comments/', authMiddleware, async (req, res) => {
     console.log('/api/comments 연결')
+    const user_id = req.locals.user;
     const post_id = req.params.post_id;
-    const { user_id, comment } = req.body;
+    const {comment} = req.body;
     // const post = await Post.findOne({ post_id })
     // console.log(post)
     const user = await User.findOne({ user_id })
@@ -49,12 +51,12 @@ router.post('/posts/:post_id/comments/', async (req, res) => {
 });
 
 // 댓글 삭제
-router.delete("/posts/:post_id/comments/:comment_id", async (req, res,) => {
+router.delete("/posts/:post_id/comments/:comment_id", authMiddleware, async (req, res,) => {
     const postId = req.params.post_id;
     const Num_postId = Number(postId)
     const commentId = req.params.comment_id;
     const Num_commentId = Number(commentId)
-    const user_id = res.locals.user.user_id
+    const user_id = req.locals.user
     // const { user_id } = req.body;
     console.log( Num_postId, Num_commentId, "Id: ", user_id )
     

@@ -4,6 +4,10 @@ const Post = require("../schemas/post")
 const User = require("../schemas/user")
 const router = express.Router();
 const cors = require("cors");
+const authMiddleware = require("../middlewares/auth-middleware")
+const Upload = require("../middlewares/upload")
+const { upload } = require("../middlewares/upload")
+const path = require("path")
 
 router.use(cors());
 
@@ -13,11 +17,12 @@ router.get("/", (req, res) =>{
 });
 
 // /api/list --> Json 형식으로 전송받음 -->list.html에서 ajax로 가져감.
-router.get("/main", async (req, res) => {
+router.get("/main", authMiddleware, async (req, res) => {
     console.log("/api/main 연결")
     try {
         const post = await Post.find().sort({ "post_id": -1 });
         // console.log('findpost-->',post)
+        // console.log(image)
         res.json({ result : post });
     } catch (err) {
     console.error(err);
@@ -26,13 +31,14 @@ router.get("/main", async (req, res) => {
 });
 
 // /api/posts --> 글 작성
-router.post("/posts", async (req, res,) => {
+router.post("/posts", authMiddleware, upload.single("imgae"), async (req, res,) => {
     console.log("/api/posts 연결");
     
     // ajax --> request 
     // imageUrl 여부 확인 필요.
-    // const { user_id } = res.locals.user
-    const { user_id, title, content } = req.body;
+    const { user_id } = res.locals.user
+    const { title, content } = req.body;
+    const image = req.file.location;
     const createdAt = Date.now();
     const userName = await User.findOne({ user_id })
     const user_name = userName.user_name
@@ -47,13 +53,11 @@ router.post("/posts", async (req, res,) => {
     let post_id = 0;
       if(postList.length == 0 || postList === null || postList == undefined){
         post_id = 1;
-    }else{
+    } else{
         post_id = postList[0].post_id+1
     }
     // console.log('1--->',post_id)
-    const sendPost = await Post.create({ post_id, user_id, user_name, title ,content, createdAt });
-    // console.log(Post)
-    // key : value (Json 형태) --> client로 보냄
+    const sendPost = await Post.create({ post_id, user_id, user_name, title ,content, createdAt, image });
     res.json({result : sendPost}); 
     console.log(sendPost);
   });
@@ -61,23 +65,15 @@ router.post("/posts", async (req, res,) => {
 // // 이미지 업로드
 // router.post("/posts/imageUpload", upload.single("image"), async (req, res) => {
 // 	try {
-// 		//const {user_id} = res.locals.user
-// 		//const { title, content, year } = req.body; //여기서 user_id 지우고 res.locals에서 user_id 가져올 예정
 // 		const image = req.file.location;
-// 		// const createdArticle = await Article.create({
-// 		// 	user_id,
-// 		// 	title,
-// 		// 	content,
-// 		// 	year: Number(year),
-// 		// 	image,
-// 		// });
 // 		res.json({ result: "success", image });
 // 	} catch (err) {
 // 		res.status(400).json({ result: "fail", msg: err });
 // 	}
 // });
+
 // 게시판 상세조회 API
-router.post("/posts/:post_id", async (req, res) => {
+router.post("/posts/:post_id", authMiddleware, async (req, res) => {
   //  console.log('req-->',req)
    const { post_id } = req.params;
    console.log(post_id);
@@ -89,10 +85,11 @@ router.post("/posts/:post_id", async (req, res) => {
 });
 
 // post 수정 API
-router.post("/modify/:post_id", async (req, res,) => {
+router.post("/modify/:post_id", authMiddleware, async (req, res,) => {
   console.log("router/api/modify 연결");
   // html ajax --> 내용을 request 함. 
-  const {post_id , title, user_id, content, createdAt} = req.body;
+  const {user_id} = req.locals.user;
+  const {post_id , title, content, createdAt} = req.body;
 //   console.log('1-->',{post_id , title, user_name, content, createdAt});
   // userId = 고유함 --> 유저 id 이거일때 뒤에꺼 바꿈
   //updateOne ({A} , {B})
@@ -103,19 +100,15 @@ router.post("/modify/:post_id", async (req, res,) => {
   // console.log(modifyPost);
 });
 
- //get --> query, post --> body 
- // delete apis
-router.delete("/delete/:post_id", async (req, res,) => {
+router.delete("/delete/:post_id", authMiddleware, async (req, res,) => {
   console.log("router/api/delete 연결");
   // html ajax --> 내용을 request 함. 
   // console.log('req-->',req);
   const {post_id} = req.body;
-//   console.log('delete-->',post_id);
   const deletePost = await Post.deleteOne({post_id:post_id});
   // console.log(deletePost);
 
   res.json({result : deletePost}); 
-  // console.log(deletePost);
 });
 
 

@@ -5,7 +5,7 @@ const dotenv = require("dotenv").config();
 module.exports = (req, res, next) => {
   
     const { authorization } = req.headers
-    const [tokenType, tokenValue] = authorization.split(' ')
+    const [tokenType, tokenValue] = (authorization||'').split('.');
 
     if (tokenType !== "Bearer") {
         return res.status(401).send({

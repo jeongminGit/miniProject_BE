@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const User = require('../models/user');
+const User = require('../schemas/user');
 
 module.exports = (req, res, next) => {
     const { authorization } = req.headers;
@@ -26,13 +26,13 @@ module.exports = (req, res, next) => {
         return;
     }
     try {
-        const { userId } = jwt.verify(tokenValue, process.env.JWT_SECRET); // 유효한 토큰인지 확인. verify
+        const { user_id } = jwt.verify(tokenValue, process.env.JWT_SECRET); // 유효한 토큰인지 확인. verify
         // const user = User.findById(userId).exec(); // 이렇게 해서 찾아왔던 user를, 아래 구문과 같이 변경
         /**
          * user 내용 예시
          * { user: { _id: new ObjectId("61f39afc469383be12e78e81"), email: 'test@test.com', nickname: 'mynickname', password: '1234', __v: 0 }}
          */
-        User.findOne({ userId: userId })
+        User.findOne({ user_id: user_id })
             .exec()
             .then((user) => {
                 res.locals.user = user; // res.locals 를 사용하면 이 미들웨어를 거쳐가는 다른 곳에서도 다 공통적으로 사용할 수 있음.
