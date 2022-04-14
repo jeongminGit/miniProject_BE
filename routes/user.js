@@ -103,10 +103,10 @@ router.post("/signup", async (req, res) => {
 router.post("/login", async (req, res) => {
     const { user_id, password } = req.body
     const user = await User.findOne({ user_id })
-    console.log(user)
-    var _id = user._id
+    // console.log(user)
+    // var _id = user._id
     var user_name = user.user_name
-    console.log(user_id, user_name, password, _id)
+    console.log(user_id, user_name, password)
     if (!user) {
         res.status(401).send({
             errorMessage: "존재하지 않는 이메일입니다."
@@ -117,7 +117,7 @@ router.post("/login", async (req, res) => {
         console.log(correctPassword)
         if (correctPassword) {
             const token = jwt.sign({ user_id: user.user_id }, `${process.env.KEY}`);
-    res.status(200).send({ token, user_id, user_name, _id })
+    res.status(200).send({ token, user_id, user_name })
         } else {
             res.status(400).send({errorMessage: '비밀번호를 확인해주세요.' })
         }
@@ -147,7 +147,6 @@ router.get("/checkLogin", authMiddleware, async (req, res) => {
     const { user } = res.locals;
     res.send({
       user_name: user[0].user_name,
-      _id : user[0]._id,
     });
   });
 
