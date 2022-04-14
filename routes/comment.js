@@ -5,7 +5,7 @@ const User = require('../schemas/user')
 const Post = require('../schemas/post');
 const comment = require('../schemas/comment');
 const router = express.Router();
-const authMiddleware = require("../middlewares/auth-middleware")
+const authMiddleware = require("../middlewares/auth")
 
 // 댓글 조회
 router.get('/posts/:post_id/comments', authMiddleware, async (req, res) => {
