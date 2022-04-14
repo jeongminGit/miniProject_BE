@@ -4,7 +4,7 @@ const User = require("../schemas/user")
 const Joi = require("joi")
 const cors = require('cors')
 const bcrypt = require('bcrypt')
-
+const authMiddleware = require("../middlewares/auth");
 const corsOptions = {
     origin: '*',
     // credentials: true
@@ -113,7 +113,7 @@ router.post("/login", async (req, res) => {
         })
         return
     } else {
-        const correctPassword = await bcrypt.compareSync(password, user.password)//hash 값과 req값을 비교해서 일치하면 true 출력 
+        const correctPassword = await bcrypt.compareSync(password, user.password)//hash 값과 req값을 비교해서 일치하면 true 출력
         console.log(correctPassword)
         if (correctPassword) {
             const token = jwt.sign({ user_id: user.user_id }, `${process.env.KEY}`);
@@ -122,7 +122,6 @@ router.post("/login", async (req, res) => {
             res.status(400).send({errorMessage: '비밀번호를 확인해주세요.' })
         }
     }
-  
 })
 
 // 아이디, 닉네임 중복확인
@@ -143,6 +142,14 @@ router.post('/idCheck', async (req, res) => {
         alert: '사용 가능합니다.'
     });
 });
+
+router.get("/checkLogin", authMiddleware, async (req, res) => {
+    const { user } = res.locals;
+    res.send({
+      user_name: user[0].user_name,
+      _id : user[0]._id,
+    });
+  });
 
 
 
