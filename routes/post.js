@@ -6,8 +6,8 @@ const router = express.Router();
 const cors = require("cors");
 const authMiddleware = require("../middlewares/auth")
 // const Upload = require("../middlewares/upload")
-const { upload } = require("../middlewares/upload")
-const deleteS3 = require("../middlewares/deleteS3")
+// const { upload } = require("../middlewares/upload")
+// const deleteS3 = require("../middlewares/deleteS3")
 // const path = require("path")
 
 router.use(cors());
@@ -32,7 +32,7 @@ router.get("/main", authMiddleware, async (req, res) => {
 });
 
 // /api/posts --> 글 작성
-router.post("/posts", authMiddleware, upload.single("image"), async (req, res,) => {
+router.post("/posts", authMiddleware, async (req, res,) => {
     console.log("/api/posts 연결");
     
     // ajax --> request 
@@ -41,7 +41,7 @@ router.post("/posts", authMiddleware, upload.single("image"), async (req, res,) 
     const user_id = user[0].user_id
     const user_name = user[0].user_name
     const { title, content } = req.body;
-    const image = req.file.location;
+    // const image = req.file.location;
     const createdAt = Date.now();
     // const userName = await User.findOne({ user_id })
     console.log(user_id, user_name)
@@ -59,7 +59,7 @@ router.post("/posts", authMiddleware, upload.single("image"), async (req, res,) 
         post_id = postList[0].post_id+1
     }
     // console.log('1--->',post_id)
-    const sendPost = await Post.create({ post_id, user_id, user_name, title ,content, createdAt, image });
+    const sendPost = await Post.create({ post_id, user_id, user_name, title ,content, createdAt});
     res.json({result : sendPost}); 
     console.log(sendPost);
   });
@@ -87,7 +87,7 @@ router.post("/posts/:post_id", authMiddleware, async (req, res) => {
 });
 
 // post 수정 API
-router.post("/modify/:post_id", authMiddleware, upload.single("image"), async (req, res,) => {
+router.post("/modify/:post_id", authMiddleware, async (req, res,) => {
   console.log("router/api/modify 연결");
   // html ajax --> 내용을 request 함. 
   const { user } = res.locals;
@@ -97,7 +97,7 @@ router.post("/modify/:post_id", authMiddleware, upload.single("image"), async (r
   // console.log(user_id, user_name)
   const post_id = req.params.post_id;
   // console.log(post_id)
-  const image = req.file.location;
+  // const image = req.file.location;
   const { title, content } = req.body;
   const createdAt = Date.now();
   const checkPost = await Post.find({post_id:post_id})
@@ -109,13 +109,10 @@ router.post("/modify/:post_id", authMiddleware, upload.single("image"), async (r
         result: "fail",
         errorMessage: "자기글만 수정할 수 있습니다.",
       });
-    } else {
-      if (checkPost[0].image !== image) {
-        await deleteS3(checkPost);
-      }
-      await Post.updateOne({ post_id: post_id }, { title: title, user_id: user_id, user_name: user_name, content: content, title: title, createdAt: createdAt, image: image });
-      console.log('게시글 수정 완료!')
     }
+    await Post.updateOne({ post_id: post_id }, { title: title, user_id: user_id, user_name: user_name, content: content, title: title, createdAt: createdAt});
+    console.log('게시글 수정 완료!')
+    
   }
 	res.json({ result: "success", msg: "수정되었습니다." });
 });
@@ -137,7 +134,6 @@ router.delete("/delete/:post_id", authMiddleware, async (req, res,) => {
         errorMessage: "자기글만 삭제할 수 있습니다.",
       });
     } else {
-        await deleteS3(checkPost);
         await Post.deleteOne({post_id:post_id})
       }
     }
