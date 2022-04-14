@@ -28,9 +28,9 @@ router.get("/main", async (req, res) => {
 // /api/posts --> 글 작성
 router.post("/posts", authMiddleware, upload.single("image"), async (req, res,) => {
     console.log("/api/posts 연결");
-    const { user } = res.locals;
-    const user_id = user[0].user_id
-    const user_name = user[0].user_name
+    // const { user } = res.locals;
+    // const user_id = user[0].user_id
+    // const user_name = user[0].user_name
     const { title, content } = req.body;
     const image = req.file.location;
     const createdAt = Date.now();  
@@ -42,7 +42,7 @@ router.post("/posts", authMiddleware, upload.single("image"), async (req, res,) 
     } else{
         post_id = postList[0].post_id+1
     }
-    const sendPost = await Post.create({ post_id, user_id, user_name, title ,content, createdAt, image});
+    const sendPost = await Post.create({ post_id, title ,content, createdAt, image});
     res.json({result : sendPost}); 
     console.log(sendPost);
   });
