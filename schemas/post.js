@@ -8,6 +8,10 @@ const postSchema = new mongoose.Schema({
     require: true,
     unique: true,
   },
+  user_id : {
+    type: String,
+    require: true,
+  },
   user_name : {
     type: String,
     require: true,
@@ -21,8 +25,8 @@ const postSchema = new mongoose.Schema({
     required: true,
   },
   createdAt: {
-    type: String,
-    required: true
+    type: Date,
+    default: Date.now(),
   },
 });
 
