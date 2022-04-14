@@ -8,6 +8,7 @@ const connect = require('./schemas/comment');
 const postRouter = require("./routes/post"); 
 const commentsRouter = require('./routes/comment');
 
+const multer = require('multer')
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const cors = require('cors');
@@ -29,8 +30,6 @@ var db = mongoose
     .then(() => console.log('MongoDB 연결완료'))
     .catch(err =>{console.log(err);
 });
-
-
 
 const app = express();
 const router = express.Router();

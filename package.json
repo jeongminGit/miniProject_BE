@@ -1,14 +1,19 @@
 {
   "dependencies": {
+    "aws": "^0.0.3-2",
+    "aws-sdk": "^2.1114.0",
     "bcrypt": "^5.0.1",
+    "body-parser": "^1.20.0",
     "cors": "^2.8.5",
     "dotenv": "^16.0.0",
     "express": "^4.17.3",
+    "joi": "^17.6.0",
     "json": "^11.0.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.2.10",
     "mongoose-sequence": "^5.3.1",
     "multer": "^1.4.4",
+    "multer-s3": "^2.10.0",
     "node": "^17.7.2",
     "nodemon": "^2.0.15",
     "schema": "^0.2.1"
@@ -23,11 +28,10 @@
   "author": "",
   "license": "ISC",
   "description": "",
-    "body-parser": "^1.20.0",
-    "ejs": "^3.1.6",
-    "express": "^4.17.3",
-    "jsonwebtoken": "^8.5.1",
-    "method-override": "^3.0.0",
-    "mongoose": "^6.2.10"
-  }
-
+  "body-parser": "^1.20.0",
+  "ejs": "^3.1.6",
+  "express": "^4.17.3",
+  "jsonwebtoken": "^8.5.1",
+  "method-override": "^3.0.0",
+  "mongoose": "^6.2.10"
+}
